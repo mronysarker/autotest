@@ -27,7 +27,7 @@ test('Login test', async t => {
         .typeText('#password', 'rony@bcd1234')
         .click('[value="Sign in"]')
         .expect(Selector('[href="/mronysarker"]').exists).ok();    
-    });
+});
 
 test('New repository test', async t => {
     await t.useRole(UserRole);
@@ -40,4 +40,20 @@ test('New repository test', async t => {
         .typeText('#repository_name', 'abc')
         .click(Selector('[type="submit"]').withText("Create repository"))
         .expect(getPageUrl()).contains('/abc');
-    });
+});
+
+test('Edit repository test', async t => {
+    await t.useRole(UserRole);
+
+    await t
+        .click('[href="/mronysarker/abc"]')
+        .click('[href="/mronysarker/abc/settings"]')
+        .click('#rename-field')
+        .pressKey('ctrl+a delete')
+        .typeText('#rename-field', 'abcd');
+
+    await t
+        .expect(Selector('#rename-field').getAttribute('class')).contains('is-autocheck-successful')
+        .click(Selector('[type="submit"]').withText("Rename"))
+        .expect(getPageUrl()).contains('/abcd');
+});
