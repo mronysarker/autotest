@@ -9,11 +9,7 @@ const UserRole = Role('https://github.com/login', async t => {
 });
 
 fixture`Test Automation`
-    .page`https://github.com/`
-    .httpAuth({
-        username: 'mronysarker',
-        password: 'rony@bcd1234'
-    });
+    .page`https://github.com/`;
 
 const getPageUrl = ClientFunction(() => window.location.href);
 
@@ -33,7 +29,7 @@ test('New repository test', async t => {
     await t.useRole(UserRole);
 
     await t
-        .click(Selector('.btn').withText('Create repository'))
+        .click(Selector('.btn').withText('New'))
         .expect(getPageUrl()).contains('/new');
 
     await t
@@ -56,4 +52,17 @@ test('Edit repository test', async t => {
         .expect(Selector('#rename-field').getAttribute('class')).contains('is-autocheck-successful')
         .click(Selector('[type="submit"]').withText("Rename"))
         .expect(getPageUrl()).contains('/abcd');
+});
+
+test('Delete repository test', async t => {
+    await t.useRole(UserRole);
+
+    await t
+        .click('[href="/mronysarker/abcd"]')
+        .click('[href="/mronysarker/abcd/settings"]')
+        .click(Selector('summary').withText("Delete this repository"))
+        .typeText('[aria-label="Type in the name of the repository to confirm that you want to delete this repository."]', 'mronysarker/abcd')
+        .click(Selector('button').withText('I understand the consequences, delete this repository'))
+        .expect(getPageUrl()).eql('https://github.com/')
+        .expect(Selector('div').withText('Your repository "mronysarker/abcd" was successfully deleted.').exists).ok();
 });
