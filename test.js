@@ -1,10 +1,13 @@
 import { Selector } from 'testcafe';
 
-fixture`Getting Started`
+fixture`Test Automation`
     .page`https://github.com/`;
 
-test('My first test', async t => {
+test('Login test', async t => {
     await t
-        .typeText('')
-        .click('');
+        .click('[href="/login"]')
+        .typeText('#login_field', 'mronysarker')
+        .typeText('#password', 'rony@bcd1234')
+        .click('[value="Sign in"]')
+        .expect(Selector('[href="/mronysarker"]').exists).ok();
 });
